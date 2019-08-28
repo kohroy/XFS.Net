@@ -1,13 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using XFSNet;
 using System.Runtime.InteropServices;
 
 namespace XFSNet.IDC
@@ -31,15 +22,19 @@ namespace XFSNet.IDC
                         IDCCardData[] outerData = new IDCCardData[data.Length];
                         for (int i = 0; i < data.Length; ++i)
                         {
-                            outerData[i] = new IDCCardData();
-                            outerData[i].DataSource = data[i].wDataSource;
-                            outerData[i].WriteMethod = data[i].fwWriteMethod;
-                            outerData[i].Status = data[i].wStatus;
+                            outerData[i] = new IDCCardData
+                            {
+                                DataSource = data[i].wDataSource,
+                                WriteMethod = data[i].fwWriteMethod,
+                                Status = data[i].wStatus
+                            };
                             if (data[i].ulDataLength > 0)
                             {
                                 outerData[i].Data = new byte[data[i].ulDataLength];
                                 for (int j = 0; j < data[i].ulDataLength; ++j)
+                                {
                                     outerData[i].Data[j] = Marshal.ReadByte(data[i].lpbData, j);
+                                }
                             }
                         }
                         OnReadRawDataComplete(outerData);
@@ -84,7 +79,9 @@ namespace XFSNet.IDC
             int hResult = XfsApi.WFSAsyncExecute(hService, IDCDefinition.WFS_CMD_IDC_READ_RAW_DATA, new IntPtr(&sources), 0,
                 Handle, ref requestID);
             if (hResult != XFSDefinition.WFS_SUCCESS)
+            {
                 OnReadRawDataError(hResult);
+            }
         }
         public void EjectCard()
         {
@@ -97,35 +94,27 @@ namespace XFSNet.IDC
         #region Event handler
         protected virtual void OnReadRawDataError(int code)
         {
-            if (ReadRawDataError != null)
-                ReadRawDataError(code);
+            ReadRawDataError?.Invoke(code);
         }
         protected virtual void OnReadRawDataComplete(IDCCardData[] data)
         {
-            if (ReadRawDataComplete != null)
-                ReadRawDataComplete(data);
+            ReadRawDataComplete?.Invoke(data);
         }
         protected virtual void OnEjectError(int code)
         {
-            if (EjectError != null)
-            {
-                EjectError(code);
-            }
+            EjectError?.Invoke(code);
         }
         protected virtual void OnEjectComplete()
         {
-            if (EjectComplete != null)
-                EjectComplete();
+            EjectComplete?.Invoke();
         }
         protected virtual void OnMediaInserted()
         {
-            if (MediaInserted != null)
-                MediaInserted();
+            MediaInserted?.Invoke();
         }
         protected virtual void OnMediareMoved()
         {
-            if (MediareMoved != null)
-                MediareMoved();
+            MediareMoved?.Invoke();
         }
         #endregion
     }

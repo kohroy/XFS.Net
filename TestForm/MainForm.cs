@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using XFSNet;
 using XFSNet.IDC;
@@ -14,15 +8,15 @@ using XFSNet.SIU;
 
 namespace TestForm
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         private IDC device = new IDC();
         private PIN pin = new PIN();
         private CDM cdm = new CDM();
         private SIU siu = new SIU();
-        public Form1()
+        public MainForm()
         {
-           int p= XFSUtil.ParseVersionString("3.16", "3.20");
+            int p = XFSUtil.ParseVersionString("3.16", "3.30");
             string s = p.ToString("X");
             InitializeComponent();
             Controls.Add(device);
@@ -31,7 +25,7 @@ namespace TestForm
             device.OpenError += Device_OpenError;
             //device.Open("IDCARDUNIT1");
             pin.PINKey += Pin_PINKey;
-           // pin.Open("PINPAD1");
+            // pin.Open("PINPAD1");
             cdm.DispenComplete += Cdm_DispenComplete;
             //cdm.Open("CURRENCYDISPENSER1");
             siu.Open("SIU");
@@ -74,7 +68,7 @@ namespace TestForm
 
         private void button3_Click(object sender, EventArgs e)
         {
-            pin.GetData(0, false, PINDefinition.NumerKeys|XFSPINKey.WFS_PIN_FK_ENTER|XFSPINKey.WFS_PIN_FK_CANCEL, XFSPINKey.WFS_PIN_FK_UNUSED);
+            pin.GetData(0, false, PINDefinition.NumerKeys | XFSPINKey.WFS_PIN_FK_ENTER | XFSPINKey.WFS_PIN_FK_CANCEL, XFSPINKey.WFS_PIN_FK_UNUSED);
         }
 
         private void button4_Click(object sender, EventArgs e)

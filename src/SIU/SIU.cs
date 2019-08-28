@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace XFSNet.SIU
 {
@@ -14,9 +11,11 @@ namespace XFSNet.SIU
         }
         public void SetGuidLight(int pos, LightControl con)
         {
-            WFSSIUSETGUIDLIGHT guidLight = new WFSSIUSETGUIDLIGHT();
-            guidLight.fwCommand = con;
-            guidLight.wGuidLight = (ushort)pos;
+            WFSSIUSETGUIDLIGHT guidLight = new WFSSIUSETGUIDLIGHT
+            {
+                fwCommand = con,
+                wGuidLight = (ushort)pos
+            };
             IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(WFSSIUSETGUIDLIGHT)));
             Marshal.StructureToPtr(guidLight, ptr, false);
             int hResult = XfsApi.WFSAsyncExecute(hService, SIUDefinition.WFS_CMD_SIU_SET_GUIDLIGHT, ptr, 0, Handle, ref requestID);

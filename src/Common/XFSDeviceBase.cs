@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace XFSNet
@@ -26,8 +23,8 @@ namespace XFSNet
         #endregion
         public XFSDeviceBase()
         {
-            this.Width = this.Height = 0;
-            this.Visible = false;
+            Width = Height = 0;
+            Visible = false;
             MessageHandle = Handle;
         }
 
@@ -38,7 +35,10 @@ namespace XFSNet
             {
                 WFSRESULT result = new WFSRESULT();
                 if (m.LParam != IntPtr.Zero)
+                {
                     XFSUtil.PtrToStructure(m.LParam, ref result);
+                }
+
                 switch (m.Msg)
                 {
                     case XFSDefinition.WFS_OPEN_COMPLETE:
@@ -69,13 +69,14 @@ namespace XFSNet
                 XfsApi.WFSFreeResult(ref result);
             }
             else
+            {
                 base.WndProc(ref m);
+            }
         }
 
         protected virtual void OnOpenComplete()
         {
-            if (OpenComplete != null)
-                OpenComplete();
+            OpenComplete?.Invoke();
             if (autoRegister)
             {
                 InnerRegister(GetEventClass());
@@ -83,13 +84,12 @@ namespace XFSNet
         }
         protected virtual int InnerGetInfo<T>(int category, T inParam)
         {
-            
             //XfsApi.WFSGetInfo(hService, category,)
             return 0;
         }
         protected virtual int InnerGetInfo<T>(int category)
         {
-            IntPtr pOutParam = IntPtr.Zero;
+            //IntPtr pOutParam = IntPtr.Zero;
             //XfsApi.WFSGetInfo(hService, category, IntPtr.Zero, TimeOut, ref pOutParam);
             return 0;
         }
@@ -109,34 +109,35 @@ namespace XFSNet
         }
         protected virtual void OnOpenError(int code)
         {
-            if (OpenError != null)
-                OpenError(code);
+            OpenError?.Invoke(code);
         }
         protected virtual void OnCloseComplete()
         {
-            if (CloseComplete != null)
-                CloseComplete();
+            CloseComplete?.Invoke();
         }
         protected virtual void OnRegisterComplete()
         {
-            if (RegisterComplete != null)
-                RegisterComplete();
+            RegisterComplete?.Invoke();
         }
         protected virtual void OnRegisterError(int code)
         {
-            if (RegisterError != null)
-                RegisterError(code);
+            RegisterError?.Invoke(code);
         }
         protected virtual void OnExecuteComplete(ref WFSRESULT result)
-        { }
+        {
+        }
         protected virtual void OnExecuteEvent(ref WFSRESULT result)
-        { }
+        {
+        }
         protected virtual void OnServiceEvent(ref WFSRESULT result)
-        { }
+        {
+        }
         protected virtual void OnUserEvent(ref WFSRESULT result)
-        { }
+        {
+        }
         protected virtual void OnSystemEvent(ref WFSRESULT result)
-        { }
+        {
+        }
         public void Open(string logicName, bool paramAutoRegister = true,
             string appID = "XFS.NET", string lowVersion = "3.0",
             string highVersion = "3.0")
@@ -146,7 +147,7 @@ namespace XFSNet
                 highVersion);
             WFSVERSION srvcVersion = new WFSVERSION();
             WFSVERSION spVersion = new WFSVERSION();
-            int hResult = 0;
+            int hResult;
             if (!isStartup)
             {
                 hResult = XfsApi.WFSStartUp(requestVersion, ref spVersion);

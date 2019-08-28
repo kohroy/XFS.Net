@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 namespace XFSNet.IDC
 {
@@ -16,7 +13,10 @@ namespace XFSNet.IDC
             get
             {
                 if (Data != null && Data.Length > 0)
+                {
                     return Encoding.Default.GetString(Data);
+                }
+
                 return string.Empty;
             }
         }
